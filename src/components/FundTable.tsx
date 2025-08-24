@@ -29,10 +29,13 @@ export function FundTable({ funds }: FundTableProps) {
       <div className="grid gap-4">
         {funds.map((fund) => (
           <Card key={fund.id} className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
               <div className="md:col-span-2">
                 <h3 className="font-semibold text-foreground mb-1">{fund.name}</h3>
-                <p className="text-sm text-muted-foreground">ISIN: {fund.isin}</p>
+                <p className="text-sm text-muted-foreground mb-2">ISIN: {fund.isin}</p>
+                {fund.description && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">{fund.description}</p>
+                )}
               </div>
               
               <div>

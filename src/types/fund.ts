@@ -5,6 +5,7 @@ export interface Fund {
   productType: string;
   assetClass: string;
   sfdr: string;
+  description?: string;
   shareClass?: string;
   domicile?: string;
   currency?: string;

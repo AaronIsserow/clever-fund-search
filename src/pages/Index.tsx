@@ -1,34 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SearchBar } from '@/components/SearchBar';
 import { FilterChips } from '@/components/FilterChips';
 import { FundTable } from '@/components/FundTable';
-import { seedFunds } from '@/data/funds';
+import { useFunds } from '@/hooks/useFunds';
 import { parseNaturalLanguageQuery, getActiveFilters } from '@/utils/searchParser';
-import { Fund, SearchFilters } from '@/types/fund';
+import { SearchFilters } from '@/types/fund';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<SearchFilters>({});
-
-  const filteredFunds = useMemo(() => {
-    let funds: Fund[] = seedFunds;
-
-    if (filters.isin) {
-      funds = funds.filter(fund => fund.isin === filters.isin);
-    } else {
-      if (filters.productType) {
-        funds = funds.filter(fund => fund.productType === filters.productType);
-      }
-      if (filters.assetClass) {
-        funds = funds.filter(fund => fund.assetClass === filters.assetClass);
-      }
-    }
-
-    return funds;
-  }, [filters]);
+  const { funds, loading, error } = useFunds(filters);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -109,7 +93,17 @@ const Index = () => {
           <FilterChips filters={activeFilters} onRemoveFilter={handleRemoveFilter} />
 
           {/* Results */}
-          <FundTable funds={filteredFunds} />
+          {loading && (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Loading funds...</p>
+            </div>
+          )}
+          {error && (
+            <div className="text-center py-8">
+              <p className="text-red-600">Error: {error}</p>
+            </div>
+          )}
+          {!loading && !error && <FundTable funds={funds} />}
         </div>
       </main>
     </div>

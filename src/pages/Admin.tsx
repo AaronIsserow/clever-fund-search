@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UploadResult {
   success: boolean;
@@ -34,20 +35,30 @@ const Admin = () => {
         const line = lines[i].trim();
         if (!line) continue;
 
-        const columns = line.split(',');
+        const columns = line.split(',').map(col => col.trim().replace(/^"|"$/g, ''));
         
         // Basic validation
         if (columns.length < 4) {
           results.push({
             success: false,
-            message: `Row ${i + 1}: Insufficient columns`,
+            message: `Row ${i + 1}: Insufficient columns (expected at least 4, got ${columns.length})`,
             rowNumber: i + 1
           });
           continue;
         }
 
-        const isin = columns[1]?.trim();
-        if (!isin || !/^[A-Z0-9]{12}$/.test(isin)) {
+        const [name, isin, productType, assetClass, sfdr, shareClass, domicile, currency, priceDate, factsheetUrl] = columns;
+
+        if (!name || !isin || !productType || !assetClass) {
+          results.push({
+            success: false,
+            message: `Row ${i + 1}: Missing required fields (name, isin, product_type, asset_class)`,
+            rowNumber: i + 1
+          });
+          continue;
+        }
+
+        if (!/^[A-Z0-9]{12}$/.test(isin.toUpperCase())) {
           results.push({
             success: false,
             message: `Row ${i + 1}: Invalid ISIN format`,
@@ -56,11 +67,45 @@ const Admin = () => {
           continue;
         }
 
-        results.push({
-          success: true,
-          message: `Row ${i + 1}: Successfully processed fund "${columns[0]?.trim()}"`,
-          rowNumber: i + 1
-        });
+        try {
+          // Insert into Supabase
+          const { error } = await supabase
+            .from('funds')
+            .upsert({
+              name,
+              isin: isin.toUpperCase(),
+              product_type: productType,
+              asset_class: assetClass,
+              sfdr: sfdr || 'N/A',
+              share_class: shareClass || null,
+              domicile: domicile || null,
+              currency: currency || null,
+              price_date: priceDate || null,
+              factsheet_url: factsheetUrl || null
+            }, {
+              onConflict: 'isin'
+            });
+
+          if (error) {
+            results.push({
+              success: false,
+              message: `Row ${i + 1}: Database error - ${error.message}`,
+              rowNumber: i + 1
+            });
+          } else {
+            results.push({
+              success: true,
+              message: `Row ${i + 1}: Successfully saved fund "${name}"`,
+              rowNumber: i + 1
+            });
+          }
+        } catch (dbError) {
+          results.push({
+            success: false,
+            message: `Row ${i + 1}: Database error - ${dbError instanceof Error ? dbError.message : 'Unknown error'}`,
+            rowNumber: i + 1
+          });
+        }
       }
 
       setUploadResults(results);
@@ -122,7 +167,7 @@ const Admin = () => {
                   disabled={isUploading}
                 />
                 <p className="text-sm text-muted-foreground">
-                  Expected format: name, isin, product_type, asset_class, sfdr, share_class, domicile, currency, price_date, factsheet_url
+                  Expected format: name, isin, product_type, asset_class, sfdr, share_class, domicile, currency, price_date, factsheet_url. Data will be saved to the Supabase database.
                 </p>
               </div>
 

@@ -69,6 +69,6 @@ export const seedFunds: Fund[] = [
     domicile: 'UK',
     currency: 'GBP',
     priceDate: '31-07-2025',
-    factsheetUrl: 'https://abrdn.kurtosysweb.com/pdfs/F_STDR_en-gb-NN_GB0006573439.pdf'
+    factsheetUrl: 'https://abrdn.kurtosysweb.com/pdfs/F_STDI_en-gb-NN_GB0006573439.pdf'
   }
 ];

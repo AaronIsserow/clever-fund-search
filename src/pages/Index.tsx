@@ -72,15 +72,33 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
-          {/* Search Section */}
-          <div className="text-center space-y-6">
+          {/* Description Section */}
+          <div className="text-center space-y-4">
             <div className="space-y-2">
-              <h2 className="text-3xl font-semibold text-foreground">Find Your Perfect Fund</h2>
-              <p className="text-muted-foreground">
-                Search using natural language or ISIN codes
+              <h2 className="text-3xl font-semibold text-foreground">Natural Language Fund Search</h2>
+              <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
+                This web app is a natural-language search tool for exploring a small sample of Aberdeen Investment funds.
               </p>
             </div>
             
+            <div className="bg-card p-6 rounded-lg border max-w-4xl mx-auto">
+              <p className="text-muted-foreground mb-4">
+                Users can type queries in plain English, like:
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                <code className="bg-muted px-2 py-1 rounded">"oeic multi asset"</code>
+                <code className="bg-muted px-2 py-1 rounded">"unit linked fixed income"</code>
+                <code className="bg-muted px-2 py-1 rounded">"sicav active equity"</code>
+                <code className="bg-muted px-2 py-1 rounded">"icav quantitative"</code>
+              </div>
+              <p className="text-muted-foreground mt-4">
+                or directly enter an ISIN code. The app returns matching funds with key details and Factsheet buttons to view official PDFs.
+              </p>
+            </div>
+          </div>
+
+          {/* Search Section */}
+          <div className="text-center space-y-6">
             <SearchBar
               onSearch={handleSearch}
               placeholder="Try 'oeic multi asset', 'unit linked fixed income', or an ISIN code..."

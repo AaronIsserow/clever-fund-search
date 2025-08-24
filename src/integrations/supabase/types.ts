@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      funds: {
+        Row: {
+          asset_class: string
+          created_at: string
+          currency: string | null
+          description: string | null
+          domicile: string | null
+          factsheet_url: string | null
+          id: string
+          isin: string
+          name: string
+          price_date: string | null
+          product_type: string
+          sfdr: string | null
+          share_class: string | null
+          updated_at: string
+        }
+        Insert: {
+          asset_class: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          domicile?: string | null
+          factsheet_url?: string | null
+          id?: string
+          isin: string
+          name: string
+          price_date?: string | null
+          product_type: string
+          sfdr?: string | null
+          share_class?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asset_class?: string
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          domicile?: string | null
+          factsheet_url?: string | null
+          id?: string
+          isin?: string
+          name?: string
+          price_date?: string | null
+          product_type?: string
+          sfdr?: string | null
+          share_class?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

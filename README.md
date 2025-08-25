@@ -20,7 +20,7 @@ A modern web application for searching and filtering investment funds using natu
 - **State Management**: TanStack Query (React Query)
 - **Routing**: React Router DOM
 
-## Getting Started
+## Getting Started:
 
 ### Prerequisites
 
